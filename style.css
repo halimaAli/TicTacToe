@@ -135,8 +135,8 @@ p {
 /*main game*/
 td {
   border: 1px solid rgb(255, 255, 255);
-  height: 120px;
-  width: 120px;
+  height: 10vw;
+  width: 10vw;
   border-radius: 14px;
   padding: 2px;
   cursor: pointer;
@@ -161,9 +161,7 @@ td:hover {
 }
 
 table {
-  height: 550px;
-  width: 550px;
-  font-size: 90px;
+  font-size: 6vw;
   margin-left: auto;
   margin-right: auto;
 }
