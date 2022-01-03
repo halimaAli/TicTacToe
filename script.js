@@ -1,54 +1,64 @@
-//Gameboard
-
+//Gameboard Module
 const Gameboard = (() => {
-    let board = [];
-    const reloadBoard = () => {
-        for(let i = 0; i < 10; i++){
-            board[i] = "";
+    let board = document.querySelectorAll(".col");
+
+    const loadBoard = () => {
+        board.forEach(cell => {
+            cell.innerHTML = "";
+            cell.addEventListener("click", place);
+        });
+    }
+
+    function place() {
+        if (this.innerHTML == "") {
+            if (playerOne.turn){
+                this.innerHTML = playerOne.sym;
+                playerOne.turn = false;
+                playerTwo.turn = true;
+            }
+            else{
+                this.innerHTML = playerTwo.sym;
+                playerTwo.turn = false;
+                playerOne.turn = true;
+            }
         }
     }
 
-    const place = (pos, sym) => {
-        if (board[pos] = "") {
-            board[pos] = sym;
-        }
-    }
-
-    return {reloadBoard, place}
+    return {loadBoard}
 })();
 
-const Player = () => {
+//Player constructor
+const Player = (name, sym) => {
     let turn;
-    let wins;
+    let wins = 0;
+    let counter;
 
-    const changeTurn = () => {
-        if (!turn) {
-            turn = true; 
-        }
-        else {
-            turn = false;
-        }
-    } 
+    const changeTurn = (newTurn) => {
+        turn = newTurn;
+    } ;
 
     const won = () => {
         wins++;
-    }
-
-    return {turn, wins, changeTurn, won};
-}
-
-const Game = (() => {
-    let mode = 0;
-    let playerOne = null;
-    let playerTwo = null;
-    const start = () => {
-        
     };
 
-    return {start, mode};
+    return {counter, sym, name, turn, changeTurn, won};
+}
+
+//Game Module
+const Game = (() => {
+    let mode = 0;  
+    let winner = "";
+
+    //add game logic
+    //add ai player
+    return {winner, mode};
 })();
 
-//handle gamemode choice
+//initizialze two players
+let playerOne = Player("playerOne", "X");
+let playerTwo = Player("playerTwo", "O");
+
+//handle start button
 const startbutton = document.querySelector(".startbutton");
 startbutton.addEventListener("click", start);
 const modal = document.querySelector(".modal");
@@ -57,11 +67,14 @@ function start() {
     modal.style.display = "flex";
 }
 
+//handle game mode selection
 const choiceButtons = document.querySelectorAll(".choiceButton");
 choiceButtons.forEach(button => {
     button.addEventListener("mouseenter", hover);
     button.addEventListener("mouseleave", notHover)
 });
+
+  //change button from static to animated
 function notHover(){
     this.classList.remove("animated");
     this.classList.add("static")
@@ -78,23 +91,32 @@ const choiceTwo = document.querySelector(".choiceTwo");
 choiceOne.addEventListener("click", choiceMode);
 choiceTwo.addEventListener("click", choiceMode);
 
+//lets modal and welcome text vanish and then hides it completly with hide()
 const welcomePage = document.querySelector(".begin");
+
 welcomePage.addEventListener("animationend", hide)
+ const main = document.querySelector(".main");
 
 function choiceMode() {
+    modal.style.display = "none";
+    welcomePage.classList.add('fadeout'); 
+
     if(this == choiceOne){
         Game.mode = 1;
     }
     else{
         Game.mode = 2;
     }
-    modal.style.display = "none";
-    welcomePage.classList.add('fadeout');  
+
+    playerOne.turn = true;
+    playerTwo.turn = false;
+    Gameboard.loadBoard();
 }
 
 function hide(){
     if(Game.mode != 0){
      welcomePage.classList.add('hidden');
+     main.classList.remove("hidden");
     }   
 }
 

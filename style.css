@@ -67,12 +67,6 @@ body {
   transform: translateY(-7px);
 }
 
-td {
-  border: 1px solid black;
-  height: 50px;
-  width: 50px;
-}
-
 /*Game mode choice*/
 .modal {
   display: none; /* Hidden by default */
@@ -136,4 +130,40 @@ td {
 
 p {
   margin-top: 0;
+}
+
+/*main game*/
+td {
+  border: 1px solid rgb(255, 255, 255);
+  height: 120px;
+  width: 120px;
+  border-radius: 14px;
+  padding: 2px;
+  cursor: pointer;
+  transition-duration: 0.1s;
+}
+
+td:hover {
+  box-shadow: 0px 15px 20px rgba(255, 255, 255, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+.score {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 50px;
+  font-size: 8vw;
+}
+
+.turn {
+  font-size: 5vw;
+}
+
+table {
+  height: 550px;
+  width: 550px;
+  font-size: 90px;
+  margin-left: auto;
+  margin-right: auto;
 }
