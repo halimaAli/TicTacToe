@@ -35,6 +35,40 @@ body {
   }
 }
 
+@keyframes highlightRow {
+  from {
+    background-color: #27aae1;
+    box-shadow: 0;
+    color: white;
+    transform: translateY(0px);
+    transform: translateX(0px);
+  }
+
+  to {
+    background-color: rgba(255, 255, 255, 0.911);
+    box-shadow: 0px 15px 20px rgba(255, 255, 255, 0.4);
+    color: #27aae1;
+    transform: translateX(15px);
+  }
+}
+
+@keyframes highlightColumn {
+  from {
+    background-color: #27aae1;
+    box-shadow: 0;
+    color: white;
+    transform: translateY(0px);
+    transform: translateX(0px);
+  }
+
+  to {
+    background-color: rgba(255, 255, 255, 0.911);
+    box-shadow: 0px 15px 20px rgba(255, 255, 255, 0.4);
+    color: #27aae1;
+    transform: translateY(-15px);
+  }
+}
+
 .begin {
   gap: 20px;
   justify-content: center;
@@ -133,7 +167,25 @@ p {
 }
 
 /*main game*/
-td {
+.score {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 50px;
+  font-size: 8vw;
+}
+
+.info {
+  font-size: 5vw;
+}
+
+/*gameboard*/
+table {
+  font-size: 6vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.col {
   border: 1px solid rgb(255, 255, 255);
   height: 10vw;
   width: 10vw;
@@ -143,25 +195,43 @@ td {
   transition-duration: 0.1s;
 }
 
-td:hover {
+.cell:hover {
   box-shadow: 0px 15px 20px rgba(255, 255, 255, 0.4);
   color: #fff;
   transform: translateY(-7px);
 }
 
-.score {
-  display: flex;
-  justify-content: space-between;
-  padding: 0px 50px;
-  font-size: 8vw;
+.column-win,
+.row-win {
+  background-color: rgba(255, 255, 255, 0.911);
+  box-shadow: 0px 15px 20px rgba(255, 255, 255, 0.4);
+  color: #27aae1;
+  transform: translateY(-15px);
+  animation: highlightColumn;
+  animation-duration: 1s;
 }
 
-.turn {
-  font-size: 5vw;
+.row-win {
+  transform: translateX(15px);
+  animation: highlightRow;
+  animation-duration: 1s;
 }
 
-table {
-  font-size: 6vw;
-  margin-left: auto;
-  margin-right: auto;
+/*retry button*/
+.retry {
+  padding-top: 8px;
+  background-color: transparent;
+  border: 0;
+  width: 48px;
+  height: 48px;
+  transition: all 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.icon {
+  transition: all 0.4s ease-in-out;
+}
+
+.retry:hover .icon {
+  transform: rotate(360deg) scale(1.2);
 }
