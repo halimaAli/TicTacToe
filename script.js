@@ -24,7 +24,6 @@ choiceButtons.forEach(button => {
 //Gameboard Module
 const Gameboard = (() => {
     let board = document.querySelectorAll(".col");
-    let fullCells = 0;
     let currentCell;
 
     const setCurrentCell = (t) => {
@@ -43,6 +42,12 @@ const Gameboard = (() => {
 
         playerOne.turn = true;
         playerTwo.turn = false;
+        Game.fullCells = 0;
+        Game.showInfo("Player 1's turn");
+
+        if (Game.mode == 1) {
+            Com.boardCopy = [0,1,2,3,4,5,6,7,8];
+        }
     }
 
     const removeListeners = () => {
@@ -97,21 +102,46 @@ const Gameboard = (() => {
         removeListeners();
     }
 
-    return {removeListeners, loadBoard,fullCells, currentCell, board, getCurrentRow, getCurrentColumn, getCurrentDiag, setCurrentCell, highlightCells};
+    return {removeListeners, loadBoard, currentCell, board, getCurrentRow, getCurrentColumn, getCurrentDiag, setCurrentCell, highlightCells};
 })();
 
 function place() {
     if (this.innerHTML == "") {
-        Gameboard.fullCells++;
+        Game.fullCells++;
         Gameboard.setCurrentCell(this);
        // Gameboard.currentCell = this;
         if (playerOne.turn){
             this.innerHTML = playerOne.sym;
-            playerOne.turn = false;
-            playerTwo.turn = true;
-            playerOne.moveCounter++;
-            Game.showInfo("Player 2's turn");
-            Game.check(playerOne);
+
+            if (Game.mode == 1){
+                for(let i = 0; i < 10; i++){
+                    if (Gameboard.board[i] == this){
+                        let deleteAt = Com.boardCopy.indexOf(i);
+                        Com.boardCopy.splice(deleteAt,1);
+                        break;
+                    }
+                }
+                
+                playerOne.turn = false;
+                Com.com.turn = true;
+                playerOne.moveCounter++;
+
+                Game.showInfo("Com's turn");
+
+                let check = Game.check(playerOne);
+                if (!check){
+                    Com.placeRandom();
+                }
+                
+            }
+            else{
+                playerOne.turn = false;
+                playerTwo.turn = true;
+                playerOne.moveCounter++;
+                Game.showInfo("Player 2's turn");
+                Game.check(playerOne); 
+            }
+           
         }
         else{
             this.innerHTML = playerTwo.sym;
@@ -138,7 +168,7 @@ const Player = (name, sym) => {
             playerTwoScore.innerHTML = wins;
         }
     };
-    return {moveCounter, sym, name, turn, scored,};
+    return {moveCounter, sym, name, turn, scored};
 }
 
 //Game Module
@@ -146,6 +176,7 @@ const Game = (() => {
     let mode = 0;  
     let winner = "";
     let winType = "placeholder";
+    let fullCells = 0;
     retryButton.addEventListener("click", Gameboard.loadBoard);
     
     //add game logic
@@ -161,6 +192,7 @@ const Game = (() => {
                 Gameboard.highlightCells(currentRow,"row");
                 showInfo(player.name + " won ");
                 restart();
+                return true;
             }
             //check current column
             else if (currentColumn[0].innerHTML == player.sym & currentColumn[1].innerHTML == player.sym & currentColumn[2].innerHTML == player.sym) {
@@ -168,6 +200,7 @@ const Game = (() => {
                 Gameboard.highlightCells(currentColumn,"column");
                 showInfo(player.name + " won ");
                 restart();
+                return true;
             }
             //check current diag
             else if (currentDiag.length != 0){   
@@ -177,7 +210,13 @@ const Game = (() => {
                      Gameboard.highlightCells(currentDiag,"diag");
                      showInfo(player.name + " won ");
                      restart();
+                     return true;
                 }
+            }
+            else if (Game.fullCells === 9){
+                restart();
+                showInfo("It's a tie!");
+                return true;
             }
         }
     }
@@ -190,10 +229,37 @@ const Game = (() => {
         retryButton.classList.remove("hidden");
     }
 
-    //add ai player
-    return {winner, mode, check, showInfo, winType};
+    return {winner, mode, check, showInfo, winType , fullCells};
 })();
 
+const Com = (() => {
+    let com = Player("Com", 'O');
+    let mode = "easy";
+    let boardCopy = [0,1,2,3,4,5,6,7,8];
+    
+    const placeRandom = () => {
+        
+        let index = Com.boardCopy[Math.floor(Math.random() * Com.boardCopy.length)];
+        let randomCell = Gameboard.board[index];
+        
+        if (randomCell.innerHTML == "" & Com.boardCopy.length > 0){
+            Game.fullCells++;
+            Gameboard.setCurrentCell(randomCell);
+            randomCell.innerHTML = 'O';
+
+            let deleteAt = Com.boardCopy.indexOf(index);
+            Com.boardCopy.splice(deleteAt,1);
+
+            com.turn = false;
+            playerOne.turn = true;
+            com.moveCounter++;
+            Game.showInfo("Player 1's turn");
+            Game.check(com);
+       }
+    };
+
+    return {placeRandom, com, boardCopy};
+})();
 
 //initizialze two players
 let playerOne = Player("Player 1", "X");
